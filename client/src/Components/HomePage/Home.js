@@ -27,9 +27,11 @@ function Home() {
           </TabList>
           <TabPanels>
             <TabPanel>
+            {/* login component */}
               <Login/>
             </TabPanel>
             <TabPanel>
+            {/* signup component  */}
               <Signup/>
             </TabPanel>
           </TabPanels>
