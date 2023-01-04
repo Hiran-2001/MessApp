@@ -4,22 +4,14 @@ dotenv.config()
 const app = express();
 const cors =require("cors");
 const {connectToMongo} = require("./config/conn");
-const port = process.env.PORT
-app.listen(port,()=>{
-    console.log(`server started at ${port}`);
-})
+const port = process.env.PORT || 4000
+const userRoutes = require("./routes/userRoutes")
 connectToMongo()
 app.use(cors())
+app.use(express.json())
 
-const data = [{
-    name:"Hiran",
-    age:20
-},{
-    name:"sreekutty",
-    age:21
-}]
+app.use('/user',userRoutes)
 
-app.get('/user',(req,res)=>{
-    res.send(data)
-    
+app.listen(port,()=>{
+    console.log(`server started at ${port}`);
 })
