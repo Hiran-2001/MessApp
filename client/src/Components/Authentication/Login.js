@@ -6,17 +6,39 @@ import {
   InputGroup,
   InputRightElement,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import "./Login.css"
 function Login() {
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const submitHandler = () => {};
+  const [loading, setLoading] = useState(false);
   const handleClick = () => setShow(!show);
+  const toast = useToast()
+  const navigate = useNavigate()
+
+  const submitHandler = async () => {
+   setLoading(true)
+
+   if (!email || !password) {
+    toast({
+      title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+    })
+    setLoading(false)
+   }
+  };
 
   return (
+    <div className="loginPage">
+
     <VStack color={"black"}>
       <FormControl id="first-name" isRequired>
         <FormLabel>Email</FormLabel>
@@ -58,6 +80,7 @@ function Login() {
         Guest User
       </Button>
     </VStack>
+    </div>
   );
 }
 

@@ -5,23 +5,127 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
+
+  const navigate = useNavigate()
   const [show, setShow] = useState(false);
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
   const [pic, setPic] = useState();
-
+  const [picLoading, setPicLoading] = useState(false);
+  const toast = useToast()
   const handleClick = () => setShow(!show);
-  const postDetails=(pics)=>{
+  
+ 
 
+  const postDetails = (pics) => {
+    setPicLoading(true);
+    if (pics === undefined) {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    // console.log(pics);
+    if (pics.type === "image/jpeg" || pics.type === "image/png" || pics.type === "image/jpg") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "MessUp");
+      data.append("cloud_name", "dtipbxhkg");
+      fetch("https://api.cloudinary.com/v1_1/dtipbxhkg/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setPic(data.url.toString());
+          console.log(data.url.toString());
+          setPicLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setPicLoading(false);
+        });
+    } else {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+      return;
+    }
   }
-  const submitHandler=()=>{
+
+
+  const submitHandler = async () => {
+    setPicLoading(false);
+    if (!name || !email || !password || !confirmPassword) {
+      toast({
+        title: "Please fill all the fields!",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "bottom",
+      })
+      setPicLoading(false)
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast({
+        title: "Password doesnt match!",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "bottom",
+      })
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        }
+      };
+      const { data } = await axios.post("/user/register", { name, email, password, pic }, config)
+      toast({
+        title: "Registration successful!",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "bottom",
+      })
+
+      localStorage.setItem('userinfo',JSON.stringify(data))
+      setPicLoading(false)
+      navigate("/chat")
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "bottom",
+      })
+      setPicLoading(false)
+    }
 
   }
   return (
@@ -82,11 +186,12 @@ function Signup() {
         />
       </FormControl>
 
-      <Button 
-      colorScheme="blue"
-      width="100%"
-    style={{marginTop:15}}
-    onClick={submitHandler}
+      <Button
+        colorScheme="blue"
+        width="100%"
+        style={{ marginTop: 15 }}
+        onClick={submitHandler}
+        isLoading={picLoading}
       >
         Sign Up
       </Button>
