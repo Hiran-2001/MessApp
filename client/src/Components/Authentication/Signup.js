@@ -90,7 +90,7 @@ function Signup() {
     if (password !== confirmPassword) {
       toast({
         title: "Password doesnt match!",
-        status: "warning",
+        status: "error",
         duration: 3000,
         isClosable: true,
         position: "bottom",
@@ -107,7 +107,7 @@ function Signup() {
       const { data } = await axios.post("/user/register", { name, email, password, pic }, config)
       toast({
         title: "Registration successful!",
-        status: "warning",
+        status: "success",
         duration: 3000,
         isClosable: true,
         position: "bottom",
