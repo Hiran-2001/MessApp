@@ -47,7 +47,8 @@ exports.login = asyncHandler(async (req, res) => {
 
 
   if (user && (await user.matchPassword(password))) {
-    res.json({
+    res.status(201).json({
+      status:201,
       _id: user._id,
       name: user.name,
       email: user.email,
@@ -55,8 +56,10 @@ exports.login = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
     }
     )
-  }else{
-    res.send("invalid details")
+  }
+  else{
+    const err = "invalid Details"
+    res.status(401).json({status:401,err})
   }
 
 })
