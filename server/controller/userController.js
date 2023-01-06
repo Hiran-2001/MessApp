@@ -63,3 +63,21 @@ exports.login = asyncHandler(async (req, res) => {
   }
 
 })
+
+//  /user/alluser/?search=Hiran
+exports.allUsers= asyncHandler(async(req,res)=>{
+  const keyword = req.query.search ? {
+    $or:[
+      {name : { $regex: req.query.search, $options: "i"}},
+      {email : { $regex: req.query.search, $options: "i"}}
+    ]
+  } : {}
+
+  const user = await userModel.find(keyword).find({_id: {$ne:req.user._id}})
+  if (!user) {
+    res.send("No user available")
+  }
+  res.send(user)
+  
+
+})
