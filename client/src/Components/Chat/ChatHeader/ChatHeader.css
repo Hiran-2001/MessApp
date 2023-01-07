@@ -1,0 +1,19 @@
+#ChatHeader{
+    display: flex;
+    /* background-color: red; */
+    height: 7vh;
+    justify-content: space-between;
+}
+.logo{
+    display: flex;
+    justify-content: space-evenly;
+    /* background-color: blue; */
+    width: 25vw;
+    padding: 15px;
+}
+.profile{
+    padding: 7px 35px;
+}
+#profile-menu{
+    height: 50px;
+}
