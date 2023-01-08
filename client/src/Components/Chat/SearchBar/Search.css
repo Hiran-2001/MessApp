@@ -1,0 +1,10 @@
+#Search-box{
+    height: 8vh;
+    width:100%;
+    display: flex;
+    padding: 5px 10px 5px 10px;
+}
+#search-box-div{
+    /* background-color: violet; */
+    /* display: flex; */
+}

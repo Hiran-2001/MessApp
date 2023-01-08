@@ -9,12 +9,25 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { FaUserAstronaut } from "react-icons/fa";
-import { ChatState } from "../../../Context/ChatProvider";
+import { useNavigate } from "react-router-dom";
+// import { ChatState } from "../../../Context/ChatProvider";
 import "./ChatHeader.css";
 function ChatHeader() {
-  const { user } = ChatState();
+  // const [user,setUser] =useState()
+
+    const navigate = useNavigate()
+  // const { user } = ChatState();
+  
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"))
+    // console.log(userInfo);
+
+  const logoutHandler =()=>{
+    localStorage.removeItem("userInfo");
+    navigate("/")
+  }
+
   return (
     <div id="ChatHeader">
       <div className="logo">
@@ -24,19 +37,19 @@ function ChatHeader() {
         <Text>MessUP</Text>
       </div>
       <div className="profile">
-        <Menu id="profile-menu">
-          <MenuButton  as={Button}>
+        <Menu id="profileMenu">
+          <MenuButton as={Button}>
             <Avatar
               size="sm"
               cursor="pointer"
-              name={user.name}
-              src={user.pic}
+              name={userInfo.name}
+              src={userInfo.pic}
             />
           </MenuButton>
           <MenuList>
             <MenuItem>My Profile</MenuItem>
             <MenuDivider />
-            <MenuItem>Logout</MenuItem>
+            <MenuItem onClick={logoutHandler}>Logout</MenuItem>
           </MenuList>
         </Menu>
       </div>

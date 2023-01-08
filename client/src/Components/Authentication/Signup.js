@@ -115,7 +115,7 @@ function Signup() {
 
       localStorage.setItem('userinfo',JSON.stringify(data))
       setPicLoading(false)
-      navigate("/chat")
+      // navigate("/chat")
     } catch (error) {
       toast({
         title: "Error Occured!",

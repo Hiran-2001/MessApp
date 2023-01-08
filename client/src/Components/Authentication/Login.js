@@ -43,9 +43,9 @@ function Login() {
       },
     }
 
-    const {data} = await axios.post("/user/login",{email,password},config)
-      console.log(data);
-      if (data.status===401) {
+    const res = await axios.post("/user/login",{email,password},config)
+      console.log(res);
+      if (res.status===401) {
         toast({
           title: "Email or password is incorrect!",
             status: "error",
@@ -55,6 +55,8 @@ function Login() {
         })
         // setLoading(false)
       }
+      localStorage.setItem("userInfo", JSON.stringify(res.data));
+      navigate('/chat')
     toast({
       title: "Login Successfully!",
         status: "success",
@@ -62,9 +64,8 @@ function Login() {
         isClosable: true,
         position: "bottom",
     })
-    localStorage.setItem("userInfo",JSON.stringify(data));
+
     // setLoading(false)
-    navigate('/chat')
    } catch (error) {
     toast({
       title: "Error Occured!",

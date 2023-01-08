@@ -8,7 +8,7 @@ function Home() {
   const Navigate = useNavigate()
   useEffect(() => {
   
-      const userInfo = JSON.parse(localStorage.getItem("userInfo"))
+      const userInfo = localStorage.getItem("userInfo")
   
        if (!userInfo) {
           Navigate("/chat")
