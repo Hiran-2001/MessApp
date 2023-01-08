@@ -13,7 +13,7 @@ function SearchBar() {
   const [loadingChat, setLoadingChat] = useState();
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"))
-    console.log(userInfo.token);
+    // console.log(userInfo.token);
   const {
     setSelectedChat,
     user,
@@ -81,6 +81,7 @@ function SearchBar() {
 
         setSelectedChat(data)
         setLoadingChat(false)
+        onclose();
     } catch (error) {
       toast({
         title: "Error fetching the chat!",

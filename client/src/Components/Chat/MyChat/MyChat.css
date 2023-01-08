@@ -1,5 +1,10 @@
 #myChat-div{
     background-color: rgb(246, 240, 240);
     height: 91vh;
-    width: 60vh;
+    width: 50vh;
+}
+#myChat-Box{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
