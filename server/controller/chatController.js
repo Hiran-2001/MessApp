@@ -15,7 +15,7 @@ exports.accessChat = asyncHandler(async (req, res) => {
         return res.status(400)
     }
 
-    let isChat = await chatModel.find({
+    let isChat = await chatModels.find({
         isGroupChat: false,
         $and: [
             { users: { $elemMatch: { $eq: req.user._id } } },
@@ -39,9 +39,9 @@ exports.accessChat = asyncHandler(async (req, res) => {
         }
 
         try {
-            const createdChat = await chatModel.create(chatData)
+            const createdChat = await chatModels.create(chatData)
 
-            const fullChat = await chatModel.findOne({ _id: createdChat._id })
+            const fullChat = await chatModels.findOne({ _id: createdChat._id })
                 .populate(
                     "users",
                     "-password"
@@ -60,7 +60,7 @@ exports.accessChat = asyncHandler(async (req, res) => {
 
 exports.fetchChat = asyncHandler(async (req, res) => {
     try {
-        chatModel.find({ users: { $elemMatch: { $eq: req.user._id } } })
+        chatModels.find({ users: { $elemMatch: { $eq: req.user._id } } })
             .populate("users", "-password")
             .populate("groupAdmin", "-password")
             .populate("latestMessage")
