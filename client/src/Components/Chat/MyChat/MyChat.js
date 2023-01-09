@@ -78,9 +78,9 @@ function MyChat() {
           d="flex"
           flexDir="column"
           p={3}
-          bg="white"
+          bg="black"
           w="100%"
-          h="100%"
+          h="74vh"
           borderRadius="sm"
           overflow="hidden"
 
