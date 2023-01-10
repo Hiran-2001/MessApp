@@ -7,6 +7,7 @@ import { Box, Button, Stack, Text, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { IoMdAdd } from "react-icons/io"
 import ChatLoading from "../ChatLoading/ChatLoading"
+import { GroupChatModel } from '../GroupChatModel/GroupChatModel';
 function MyChat() {
   const [loggedUser, setLoggedUser] = useState()
   const { setSelectedChat, selectedChat, user, notification, setNotification, chats, setChats, } = ChatState();
@@ -52,7 +53,7 @@ function MyChat() {
       flexDir="column"
       alignItems="center"
       p={3}
-      bg="white"
+      bg="yellow"
       w={{ base: "100%", md: "31%" }}
       borderRadius="lg"
       borderWidth="1px"
@@ -69,8 +70,10 @@ function MyChat() {
           w="100%"
 
         >Chats
+          <GroupChatModel>
 
           <Button rightIcon={<IoMdAdd />}>New Group</Button>
+          </GroupChatModel>
         </Box>
         <SearchBar />
 
@@ -78,7 +81,7 @@ function MyChat() {
           d="flex"
           flexDir="column"
           p={3}
-          bg="black"
+          bg="lightcyan"
           w="100%"
           h="74vh"
           borderRadius="sm"
@@ -101,7 +104,9 @@ function MyChat() {
                         borderRadius="lg"
                         key={chat._id}
                       >
-                        <Text>{!chat.isGroupChat ? getSender(loggedUser, chat.users) : chat.chatName}</Text>
+                        <Text>
+                        {!chat.isGroupChat ? getSender(loggedUser, chat.users) : chat.chatName}
+                        </Text>
                       </Box>
                     )
 
