@@ -14,7 +14,7 @@ exports.accessChat = asyncHandler(async (req, res) => {
         console.log("userId param not sent with request");
         return res.status(400)
     }
-
+   
     let isChat = await chatModels.find({
         isGroupChat: false,
         $and: [
