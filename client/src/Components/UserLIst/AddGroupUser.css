@@ -1,0 +1,17 @@
+#addGroupUser{
+    height: 35px;
+    width: 8rem;
+    background-color: red;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size:15px
+
+} 
+
+#addGroupUser > p{
+    display: flex;
+    color: white;
+    flex-direction: row;
+}

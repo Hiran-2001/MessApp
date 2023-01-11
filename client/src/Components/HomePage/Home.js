@@ -52,6 +52,7 @@ function Home() {
           </TabPanels>
         </Tabs>
       </Box>
+      
     </Container>
   );
 }

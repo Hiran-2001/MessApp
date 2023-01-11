@@ -15,7 +15,9 @@ import {
 import axios from "axios";
 import React, { useState } from "react";
 import { ChatState } from "../../../Context/ChatProvider";
+import AddGroupUser from "../../UserLIst/AddGroupUser";
 import UserList from "../../UserLIst/UserList";
+
 
 export const GroupChatModel = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,9 +33,7 @@ export const GroupChatModel = ({ children }) => {
   const toast = useToast();
 
   const { user, chats, setChats } = ChatState();
-const handleGroup=()=>{
 
-}
   const handleSearch = async (q) => {
     setSearch(q);
     if (!q) {
@@ -62,12 +62,70 @@ const handleGroup=()=>{
       });
     }
   };
-  const handleSubmit = () => {};
+  const handleSubmit = async() => {
+    if(!groupChatName || !selectedUsers){
+      toast({
+        title: "please fill all the fields",
+       status: "Warning",
+       duration: 3000,
+       isClosable: true,
+       position: "top",
+      })
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const {data} = await axios.post('/chat/group',{
+        name:groupChatName,
+        users:JSON.stringify(selectedUsers.map((u)=> u._id))
+      },
+      config
+      
+      );
+      setChats([data,...chats])
+      onClose()
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+       status: "Warning",
+       duration: 3000,
+       isClosable: true,
+       position: "top",
+      })
+    }
+
+  };
+
+  const handleGroup=(userToAdd)=>{
+    if(selectedUsers.includes(userToAdd)){
+     toast({
+       title: "user already added",
+       description: "Failed to load the search result",
+       status: "error",
+       duration: 3000,
+       isClosable: true,
+       position: "bottom-left",
+     });
+     return;
+    }
+
+    setSelectedUsers([...selectedUsers,userToAdd])
+}
+
+const handleDelete=(delUser)=>{
+  // console.log(delUser);
+  const reduceUser = selectedUsers.filter((e)=>{ return e._id !== delUser._id})
+  setSelectedUsers(reduceUser)
+}
   return (
     <div>
       <>
         <span onClick={onOpen}>{children}</span>
-
+        
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
@@ -98,8 +156,24 @@ const handleGroup=()=>{
                   }}
                 />
               </FormControl>
+                    <div style={{display:"flex",backgroundColor:"blue", flexWrap:"wrap"}}>
+                 
+                 {
+                  selectedUsers.map((u)=>{
+                    return(
 
-              {/* selected users  */}
+                    <AddGroupUser
+                      key={user._id}
+                      user={u}
+                      handleFunction={()=>{handleDelete(u)}}
+                    />
+                    )
+
+                  })
+                 }
+                    </div>
+
+
                   {
                     loading ? <span>Loading...</span> : (
                         searchResult.slice(0,4).map(user=>{
