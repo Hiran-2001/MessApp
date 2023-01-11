@@ -1,5 +1,5 @@
 #myChat-div{
-    background-color: rgb(230, 160, 160);
+    /* background-color: rgb(230, 160, 160); */
     height: 91vh;
     width: 50vh;
 }
@@ -7,5 +7,5 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(204, 255, 0);
+    /* background-color: rgb(204, 255, 0); */
 }

@@ -8,7 +8,7 @@ import axios from 'axios';
 import { IoMdAdd } from "react-icons/io"
 import ChatLoading from "../ChatLoading/ChatLoading"
 import { GroupChatModel } from '../GroupChatModel/GroupChatModel';
-function MyChat() {
+function MyChat({fetchChatsAgain}) {
   const [loggedUser, setLoggedUser] = useState()
   const { setSelectedChat, selectedChat, user, notification, setNotification, chats, setChats, } = ChatState();
 
@@ -41,7 +41,7 @@ function MyChat() {
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")))
     fetchChat()
-  }, [])
+  }, [fetchChatsAgain])
 
   const getSender = (loggedUser, users) => {
     return users[0]._id === loggedUser._id ? users[1].name : users[0].name
@@ -53,7 +53,6 @@ function MyChat() {
       flexDir="column"
       alignItems="center"
       p={3}
-      bg="yellow"
       w={{ base: "100%", md: "31%" }}
       borderRadius="lg"
       borderWidth="1px"
@@ -81,10 +80,8 @@ function MyChat() {
           d="flex"
           flexDir="column"
           p={3}
-          bg="lightcyan"
           w="100%"
           h="74vh"
-          borderRadius="sm"
           overflow="hidden"
 
         >
@@ -97,11 +94,11 @@ function MyChat() {
                       <Box
                         onClick={() => setSelectedChat(chat)}
                         cursor="pointer"
-                        bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
+                        bg={selectedChat === chat ? "black" : "white"}
                         color={selectedChat === chat ? "white" : "black"}
+                        borderRadius={selectedChat===chat ? "lg" : ""}
                         px={3}
                         py={2}
-                        borderRadius="lg"
                         key={chat._id}
                       >
                         <Text>
