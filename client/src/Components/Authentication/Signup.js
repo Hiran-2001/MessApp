@@ -1,31 +1,88 @@
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputRightElement,
-  useToast,
-  VStack,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
-import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { Button } from "@chakra-ui/button";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import { VStack } from "@chakra-ui/layout";
+import { useToast } from "@chakra-ui/toast";
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 
-function Signup() {
-
-  const navigate = useNavigate()
+const Signup = () => {
   const [show, setShow] = useState(false);
+  const handleClick = () => setShow(!show);
+  const toast = useToast();
+  const navigate = useNavigate();
+
   const [name, setName] = useState();
   const [email, setEmail] = useState();
+  const [confirmpassword, setConfirmpassword] = useState();
   const [password, setPassword] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
   const [pic, setPic] = useState();
   const [picLoading, setPicLoading] = useState(false);
-  const toast = useToast()
-  const handleClick = () => setShow(!show);
-  
- 
+
+  const submitHandler = async () => {
+    setPicLoading(true);
+    if (!name || !email || !password || !confirmpassword) {
+      toast({
+        title: "Please Fill all the Feilds",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+      return;
+    }
+    if (password !== confirmpassword) {
+      toast({
+        title: "Passwords Do Not Match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+    console.log(name, email, password, pic);
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        "/api/user",
+        {
+          name,
+          email,
+          password,
+          pic,
+        },
+        config
+      );
+      console.log(data);
+      toast({
+        title: "Registration Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setPicLoading(false);
+      navigate("/chats");
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+    }
+  };
 
   const postDetails = (pics) => {
     setPicLoading(true);
@@ -39,13 +96,12 @@ function Signup() {
       });
       return;
     }
-
-    // console.log(pics);
-    if (pics.type === "image/jpeg" || pics.type === "image/png" || pics.type === "image/jpg") {
+    console.log(pics);
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
       const data = new FormData();
       data.append("file", pics);
-      data.append("upload_preset", "MessUp");
-      data.append("cloud_name", "dtipbxhkg");
+      data.append("upload_preset", "chat-app");
+      data.append("cloud_name", "piyushproj");
       fetch("https://api.cloudinary.com/v1_1/dtipbxhkg/image/upload", {
         method: "post",
         body: data,
@@ -71,66 +127,10 @@ function Signup() {
       setPicLoading(false);
       return;
     }
-  }
+  };
 
-
-  const submitHandler = async () => {
-    setPicLoading(false);
-    if (!name || !email || !password || !confirmPassword) {
-      toast({
-        title: "Please fill all the fields!",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-        position: "bottom",
-      })
-      setPicLoading(false)
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast({
-        title: "Password doesnt match!",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        position: "bottom",
-      })
-      return;
-    }
-
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        }
-      };
-      const { data } = await axios.post("/user/register", { name, email, password, pic }, config)
-      toast({
-        title: "Registration successful!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "bottom",
-      })
-
-      localStorage.setItem('userinfo',JSON.stringify(data))
-      setPicLoading(false)
-      // navigate("/chat")
-    } catch (error) {
-      toast({
-        title: "Error Occured!",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        position: "bottom",
-      })
-      setPicLoading(false)
-    }
-
-  }
   return (
-    <VStack color={"black"}>
-      {/* name */}
+    <VStack spacing="5px">
       <FormControl id="first-name" isRequired>
         <FormLabel>Name</FormLabel>
         <Input
@@ -138,46 +138,46 @@ function Signup() {
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
-
-      {/* email */}
       <FormControl id="email" isRequired>
-        <FormLabel>Email</FormLabel>
+        <FormLabel>Email Address</FormLabel>
         <Input
-          placeholder="Enter Your Email"
+          type="email"
+          placeholder="Enter Your Email Address"
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      {/* password  */}
       <FormControl id="password" isRequired>
         <FormLabel>Password</FormLabel>
-        <InputGroup>
+        <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
-            placeholder="Enter Your Your Password"
+            placeholder="Enter Password"
             onChange={(e) => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button onClick={handleClick}>{show ? "Hide" : "Show"}</Button>
+            <Button h="1.75rem" size="sm" onClick={handleClick}>
+              {show ? "Hide" : "Show"}
+            </Button>
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      {/* confirm password  */}
-      <FormControl id="c-password" isRequired>
-        <FormLabel> Confirm Password</FormLabel>
-        <InputGroup>
+      <FormControl id="password" isRequired>
+        <FormLabel>Confirm Password</FormLabel>
+        <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
-            placeholder="Enter Your Your Password"
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirm password"
+            onChange={(e) => setConfirmpassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button onClick={handleClick}>{show ? "Hide" : "Show"}</Button>
+            <Button h="1.75rem" size="sm" onClick={handleClick}>
+              {show ? "Hide" : "Show"}
+            </Button>
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      {/* Pic */}
-      <FormControl id="email" isRequired>
-        <FormLabel>Picture</FormLabel>
+      <FormControl id="pic">
+        <FormLabel>Upload your Picture</FormLabel>
         <Input
           type="file"
           p={1.5}
@@ -185,7 +185,6 @@ function Signup() {
           onChange={(e) => postDetails(e.target.files[0])}
         />
       </FormControl>
-
       <Button
         colorScheme="blue"
         width="100%"
@@ -197,6 +196,6 @@ function Signup() {
       </Button>
     </VStack>
   );
-}
+};
 
 export default Signup;
